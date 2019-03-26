@@ -15,9 +15,13 @@ signals:
 
 public slots:
     void receiveServerData();
+    void disconnectedFromServer();
+
+protected:
+    void timerEvent(QTimerEvent *event);
 
 private:
-    QTcpSocket *m_socket;
+    QList<QTcpSocket*> m_sockets;
 };
 
 #endif // TCPCLIENTS_H

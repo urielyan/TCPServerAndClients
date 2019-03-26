@@ -19,9 +19,18 @@ signals:
 public slots:
     void handleNewConnection();
 
+    void readClientsData();
+    void clientDisconnected();
+
 private:
     QTcpServer m_server;
     QList <QTcpSocket*> m_clients;
+
+private:
+    void printInfo(QString msg, QTcpSocket* socket);
+
+private:
+    double add(double a, double b);
 };
 
 #endif // TCPSERVER_H
