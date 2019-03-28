@@ -2,6 +2,7 @@
 
 #include <QTcpSocket>
 #include <QDebug>
+#include <QDateTime>
 
 TCPServer::TCPServer(QObject *parent) : QObject(parent)
 {
@@ -46,6 +47,9 @@ struct TestData
 };
 void TCPServer::readClientsData()
 {
+    static QDateTime initDateTime = QDateTime::currentDateTime();
+    static int count = 0;
+
     QTcpSocket *clientSocket = qobject_cast<QTcpSocket*> (sender());
     if (!clientSocket)
     {
@@ -60,8 +64,16 @@ void TCPServer::readClientsData()
         return;
     }
     memcpy((void *)&structData, (void *)allData.data(), allData.size());
-    qDebug() << "收到信息： " << structData.a << structData.b;
+    //qDebug() << "收到信息： " << structData.a << structData.b;
     add(structData.a, structData.b);
+    count++;
+//    qDebug() << QDateTime::currentDateTime().msecsTo(initDateTime);
+    if (QDateTime::currentDateTime().msecsTo(initDateTime) < -1000)
+    {
+        qDebug() << "one second can solve data " << count;
+        count = 0;
+        initDateTime = QDateTime::currentDateTime();
+    }
 }
 
 void TCPServer::clientDisconnected()
@@ -95,7 +107,7 @@ double TCPServer::add(double a, double b)
     double aa = a;
     double bb = b;
     sum = aa + bb;
-    qDebug() << a << b << aa << bb << sum;
+    //qDebug() << a << b << aa << bb << sum;
     return sum;
 }
 
