@@ -2,6 +2,8 @@
 
 #include <QHostAddress>
 #include <QDebug>
+#include <QTimerEvent>
+#include <QtMath>
 
 struct TestData
 {
@@ -17,17 +19,12 @@ TCPClients::TCPClients(QObject *parent) : QObject(parent)
         socket->connectToHost(QHostAddress::LocalHost, 11555);
         connect(socket, &QTcpSocket::readyRead, this,  &TCPClients::receiveServerData);
         connect(socket, &QTcpSocket::disconnected, this, &TCPClients::disconnectedFromServer);
-        TestData structData;
-        structData.a = 2.5232;
-        structData.b = 5.266;
 
-        if (socket->state() == QTcpSocket::ConnectedState)
-        {
-        }
-        //使用多线程处理多个子程序
-        startTimer(50);
-        socket->write(QByteArray((const char*)(&structData), sizeof(structData)));//
-        m_sockets.append(socket);
+
+        //启动多个计时器
+        int timeID = startTimer(20);
+        m_sockets[timeID] = socket;
+        //m_sockets.append(socket);
     }
     //connect()
 }
@@ -51,10 +48,27 @@ void TCPClients::disconnectedFromServer()
         qDebug() << "Invalid socket!";
         return;
     }
-    m_sockets.removeOne(socket);
+    m_sockets.remove(m_sockets.key(socket));
 }
 
 void TCPClients::timerEvent(QTimerEvent *event)
 {
+    int timeID = event->timerId();
+    if (!m_sockets.contains(timeID))
+    {
+        return;
+    }
+    QTcpSocket *socket = m_sockets.value(timeID);
+    if (!socket)
+    {
+        return;
+    }
+
+    TestData structData;
+    structData.a = qrand() % 10;
+    structData.b = qrand() % 10;
+
+
+    socket->write(QByteArray((const char*)(&structData), sizeof(structData)));//
 
 }

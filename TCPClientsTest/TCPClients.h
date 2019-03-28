@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QMap>
 
 class TCPClients : public QObject
 {
@@ -21,7 +22,7 @@ protected:
     void timerEvent(QTimerEvent *event);
 
 private:
-    QList<QTcpSocket*> m_sockets;
+    QMap<int, QTcpSocket*> m_sockets;
 };
 
 #endif // TCPCLIENTS_H
