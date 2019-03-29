@@ -37,7 +37,7 @@ void TCPServer::handleNewConnection()
 
     clientSocket->write("Hi, I'm server!");
 
-    printInfo("New Connection on: \n", clientSocket);
+    //printInfo("New Connection on: \n", clientSocket);
 }
 
 struct TestData
@@ -86,7 +86,7 @@ void TCPServer::clientDisconnected()
     }
 
     m_clients.removeOne(clientSocket);
-    printInfo("Disconnected on ", clientSocket);
+    //printInfo("Disconnected on ", clientSocket);
 }
 
 void TCPServer::printInfo(QString msg, QTcpSocket *clientSocket)
